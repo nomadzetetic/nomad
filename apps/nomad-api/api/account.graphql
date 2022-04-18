@@ -1,0 +1,36 @@
+type Account {
+    id: String!
+    nickname: String!
+    email: String!
+    avatarUrl: String
+}
+
+input RegisterAccountInput {
+    email: String!
+    password: String!
+    nickname: String!
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type LoginResult {
+    jwtToken: String!
+}
+
+input ActivateAccountInput {
+    activationToken: String!
+    accountId: String!
+}
+
+extend type Query {
+    account: Account! @authorized
+    login(input: LoginInput!): LoginResult!
+}
+
+extend type Mutation {
+    registerAccount(input: RegisterAccountInput!): Boolean!
+    activateAccount(input: ActivateAccountInput!): Boolean!
+}

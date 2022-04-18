@@ -1,0 +1,54 @@
+{
+    "root": "apps/nomad-ui",
+    "sourceRoot": "apps/nomad-ui",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "@nrwl/next:build",
+            "outputs": ["{options.outputPath}"],
+            "defaultConfiguration": "production",
+            "options": {
+                "root": "apps/nomad-ui",
+                "outputPath": "dist/apps/nomad-ui"
+            },
+            "configurations": {
+                "production": {}
+            }
+        },
+        "serve": {
+            "executor": "@nrwl/next:server",
+            "options": {
+                "buildTarget": "nomad-ui:build",
+                "dev": true
+            },
+            "configurations": {
+                "production": {
+                    "buildTarget": "nomad-ui:build:production",
+                    "dev": false
+                }
+            }
+        },
+        "export": {
+            "executor": "@nrwl/next:export",
+            "options": {
+                "buildTarget": "nomad-ui:build:production"
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["coverage/apps/nomad-ui"],
+            "options": {
+                "jestConfig": "apps/nomad-ui/jest.config.js",
+                "passWithNoTests": true
+            }
+        },
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/nomad-ui/**/*.{ts,tsx,js,jsx}"]
+            }
+        }
+    },
+    "tags": []
+}

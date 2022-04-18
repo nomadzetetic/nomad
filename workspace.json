@@ -1,0 +1,7 @@
+{
+    "version": 2,
+    "projects": {
+        "nomad-api": "apps/nomad-api",
+        "nomad-ui": "apps/nomad-ui"
+    }
+}

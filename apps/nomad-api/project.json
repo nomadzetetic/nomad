@@ -1,0 +1,41 @@
+{
+    "root": "apps/nomad-api",
+    "projectType": "application",
+    "sourceRoot": "apps/nomad-api",
+    "targets": {
+        "build": {
+            "executor": "@nx-go/nx-go:build",
+            "options": {
+                "outputPath": "dist/apps/nomad-api",
+                "main": "apps/nomad-api/cmd/main.go"
+            }
+        },
+        "serve": {
+            "executor": "@nx-go/nx-go:serve",
+            "options": {
+                "main": "apps/nomad-api/cmd/main.go"
+            }
+        },
+        "test": {
+            "executor": "@nx-go/nx-go:test"
+        },
+        "lint": {
+            "executor": "@nx-go/nx-go:lint"
+        },
+        "generate": {
+            "executor": "@nrwl/workspace:run-commands",
+            "options": {
+                "command": "go run github.com/99designs/gqlgen generate",
+                "cwd": "apps/nomad-api"
+            }
+        },
+        "init": {
+            "executor": "@nrwl/workspace:run-commands",
+            "options": {
+                "command": "go run github.com/99designs/gqlgen init",
+                "cwd": "apps/nomad-api"
+            }
+        }
+    },
+    "tags": ["backend"]
+}

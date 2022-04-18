@@ -1,0 +1,8 @@
+enum Role {
+    ADMIN
+    USER
+}
+
+directive @hasRoles(roles: [[Role!]!]!) on FIELD_DEFINITION
+
+directive @authorized on FIELD_DEFINITION
