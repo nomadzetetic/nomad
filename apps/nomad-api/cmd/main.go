@@ -1,25 +1,49 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"context"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-gonic/gin"
 	"github.com/nomadzetetic/apps/nomad-api/pkg/config"
+	"github.com/nomadzetetic/apps/nomad-api/pkg/graph"
 	"github.com/nomadzetetic/apps/nomad-api/pkg/graph/resolvers"
-	"github.com/nomadzetetic/apps/nomad-api/pkg/graph/server"
 )
+
+func graphqlHandler(gqlServerConfig graph.Config) gin.HandlerFunc {
+	h := handler.NewDefaultServer(graph.NewExecutableSchema(gqlServerConfig))
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL", "/query")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+func ginContextToContextMiddleware(contextKey config.GinContextKey) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := context.WithValue(c.Request.Context(), contextKey, c)
+		c.Request = c.Request.WithContext(ctx)
+		c.Next()
+	}
+}
 
 func main() {
 	configService := &config.EnvConfigService{}
 	port := configService.GetPort()
+	graphConfig := graph.Config{Resolvers: &resolvers.Resolver{}}
+	graph.SetupDirectives(graphConfig)
 
-	srv := handler.NewDefaultServer(server.NewExecutableSchema(server.Config{Resolvers: &resolvers.Resolver{}}))
-
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
-
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	r := gin.Default()
+	r.Use(ginContextToContextMiddleware(configService.GetGinContextKey()))
+	r.POST("/query", graphqlHandler(graphConfig))
+	r.GET("/", playgroundHandler())
+	r.Run(":" + port)
 }

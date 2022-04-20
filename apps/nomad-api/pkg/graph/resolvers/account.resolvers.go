@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/nomadzetetic/apps/nomad-api/pkg/graph"
 	"github.com/nomadzetetic/apps/nomad-api/pkg/graph/models"
-	"github.com/nomadzetetic/apps/nomad-api/pkg/graph/server"
 )
 
 func (r *mutationResolver) RegisterAccount(ctx context.Context, input models.RegisterAccountInput) (bool, error) {
@@ -27,11 +27,11 @@ func (r *queryResolver) Login(ctx context.Context, input models.LoginInput) (*mo
 	panic(fmt.Errorf("not implemented"))
 }
 
-// Mutation returns server.MutationResolver implementation.
-func (r *Resolver) Mutation() server.MutationResolver { return &mutationResolver{r} }
+// Mutation returns graph.MutationResolver implementation.
+func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
-// Query returns server.QueryResolver implementation.
-func (r *Resolver) Query() server.QueryResolver { return &queryResolver{r} }
+// Query returns graph.QueryResolver implementation.
+func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
