@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"log"
+	"os"
+)
 
 type EnvConfigService struct{}
 
@@ -15,4 +18,20 @@ func (config EnvConfigService) GetPort() string {
 
 func (config EnvConfigService) GetGinContextKey() GinContextKey {
 	return "GinContext"
+}
+
+func (config EnvConfigService) GetPostgresDatabaseUrl() string {
+	dbUrl := os.Getenv("POSTGRES_DATABASE_URL")
+	if dbUrl == "" {
+		log.Fatal("POSTGRES_DATABASE_URL env variable not set")
+	}
+	return dbUrl
+}
+
+func (config EnvConfigService) GetJwtSecret() string {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET env variable not set")
+	}
+	return jwtSecret
 }

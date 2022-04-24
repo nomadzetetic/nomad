@@ -2,7 +2,9 @@ package config
 
 type GinContextKey string
 
-type ConfigService interface {
+type Service interface {
 	GetPort() string
 	GetGinContextKey() GinContextKey
+	GetPostgresDatabaseUrl() string
+	GetJwtSecret() string
 }
